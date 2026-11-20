@@ -23,9 +23,11 @@ wheels/
 
 # Virtual environments
 venv/
+venv*/
 ENV/
 env/
 .venv
+.venv*/
 
 # PyCharm
 .idea/
@@ -50,6 +52,7 @@ logs/
 *.db
 *.sqlite
 *.sqlite3
+!mlops/retraining_demo/*.db
 mlops_data/
 data/uploads/*
 data/results/*
@@ -63,6 +66,7 @@ data/results/*
 *.joblib
 *.onnx
 !ml_models/**/model_config.json
+!mlops/retraining_demo/candidate_model/*.pth
 !ml_models/**/taxonomy_map.json
 
 # Training outputs

@@ -539,6 +539,30 @@ flowchart LR
 - 🗄️ Uses your MLflow server if the `MLFLOW_TRACKING_URI` secret is set, otherwise a throwaway store uploaded as an artifact
 - 🛡️ The gate stops a weaker model from ever reaching users. Rollback = move the alias back.
 
+### Model-quality assessment workflow
+
+Run the held-out monitoring/retraining demonstration from the repository root:
+
+```bash
+python scripts/model_monitoring_retraining.py --epochs 3 --incoming-per-class 10 --existing-per-class 50
+```
+
+For an external labelled batch, provide a CSV with `sequence,label` columns and an optional `id` column:
+
+```bash
+python scripts/model_monitoring_retraining.py --incoming-csv incoming_batch.csv --epochs 3
+```
+
+The workflow:
+
+1. Validates required columns, missing values, duplicate IDs/sequences and target distribution.
+2. Evaluates the bundled champion on the incoming labelled batch using accuracy, weighted precision, weighted recall and weighted F1.
+3. Combines the existing training sample with the incoming batch and saves a separately named candidate model.
+4. Marks the candidate eligible only when weighted F1 is at least the champion score plus `--min-improvement`.
+5. Writes `mlops/retraining_demo/evaluation_report.json`, `incoming_batch_summary.csv` and the candidate artifact under `mlops/retraining_demo/candidate_model/`.
+
+Weighted F1 is the local gate metric because this is a multiclass problem with uneven class sizes; it penalizes poor minority-class precision and recall. The champion is never overwritten by this script. When `--mlflow-tracking-uri` is supplied, the candidate is registered as `@challenger`, metrics/artifacts are recorded in MLflow, and an optional promotion follows the same quality gate.
+
 ---
 
 ## ☁️ Deployment on AWS

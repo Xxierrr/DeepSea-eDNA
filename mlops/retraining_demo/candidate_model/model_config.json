@@ -1,0 +1,13 @@
+{
+  "num_classes": 8,
+  "embedding_dim": 128,
+  "hidden_dim": 256,
+  "num_conv_layers": 3,
+  "dropout": 0.4,
+  "max_sequence_length": 1000,
+  "model_version": "candidate-v20261120-094006",
+  "training_dataset": "combined_training_data",
+  "trained_on": "2026-11-20",
+  "best_epoch": 0,
+  "best_accuracy": 0.0
+}
